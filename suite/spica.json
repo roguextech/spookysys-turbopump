@@ -1,0 +1,23 @@
+{
+    "spec": {
+        "chamber_pressure": 20,
+        "turbine": {
+            "input_pressure": 300,
+            "medium": "decomposed_peroxide"
+        },
+        "oxidizer": {
+            "input_pressure": 3,
+            "mass_flow": 25,
+            "medium": "ethanol"
+        },
+        "fuel": {
+            "input_pressure": 3,
+            "mass_flow": 25,
+            "medium": "lox"
+        }
+    },
+    "choices":{
+        "vanes": 5,
+        "rpm": "95000"
+    }
+}

@@ -1,3 +1,4 @@
 Methodology from Lobanoff's Centrifugal Pumps book
 Note that units are U.S.
 
+Unfortunately, this method does not support fast spinning pumps

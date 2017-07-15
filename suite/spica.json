@@ -1,23 +1,27 @@
 {
     "spec": {
+        "rpm": "95000",
         "chamber_pressure": 20,
         "turbine": {
-            "input_pressure": 300,
-            "medium": "decomposed_peroxide"
+            "input_pressure": 100,
+            "output_overpressure": 3,
+            "medium": {
+                "type": "htp",
+                "concentration": 90,
+                "decomposition": 90
+            }
         },
-        "oxidizer": {
+        "oxidizer_pump": {
             "input_pressure": 3,
+            "output_overpressure": 3,
             "mass_flow": 25,
             "medium": "ethanol"
         },
-        "fuel": {
+        "fuel_pump": {
             "input_pressure": 3,
+            "output_overpressure": 3,
             "mass_flow": 25,
             "medium": "lox"
         }
-    },
-    "choices":{
-        "vanes": 5,
-        "rpm": "95000"
     }
 }

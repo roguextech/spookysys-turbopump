@@ -1,21 +1,23 @@
 import passes.empirical.lobanoff.impeller.head_rise
 import passes.empirical.lobanoff.impeller.head_constant
 import passes.empirical.lobanoff.impeller.capacity_constant
+from passes.empirical.lobanoff import impeller
 from helpers import *
 
-from passes.empirical.lobanoff import impeller
 
 
-#impeller.generate()
-
-#exit
-
-vanes = 5
+# specs
 n = 90000 # rpm
 Q = 25 # l/s
-H = bar_to_head_m(25) # m
+H = bar_to_m(25) # m
 
-impeller.generate(vanes=vanes, n=n, Q=lps_to_gpm(Q), H=m_to_ft(H))
+# specific speeds
+n_q = get_specific_speed(n=n, Q=Q, H=H)
+N_s = get_specific_speed(n=n, Q=lps_to_gpm(Q), H=m_to_ft(H))
 
-# impeller.generate(vanes=5, n=3600, Q=2100, H=450)
+
+print("speed: n =", n, "[rpm] aw =", int(rpm_to_aw(n)), "[rad/s]")
+print("flow:", Q, "[lps]", int(lps_to_gpm(Q)), "[gpm]")
+print("head:", int(H), "[m]", int(m_to_ft(H)), "[ft]")
+print("specific speed: n_q =", int(n_q), " N_s =", int(N_s))
 

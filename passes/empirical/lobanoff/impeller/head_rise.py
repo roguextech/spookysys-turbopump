@@ -54,4 +54,4 @@ def get_droop(vanes):
 
 
 _init()
-#_plot_data()
+_plot_data()

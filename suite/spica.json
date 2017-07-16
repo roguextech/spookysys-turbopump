@@ -3,7 +3,7 @@
         "rpm": "95000",
         "chamber_pressure": 20,
         "turbine": {
-            "input_pressure": 100,
+            "input_pressure": 140,
             "output_overpressure": 3,
             "medium": {
                 "type": "htp",
@@ -15,13 +15,15 @@
             "input_pressure": 3,
             "output_overpressure": 3,
             "mass_flow": 25,
-            "medium": "ethanol"
+            "medium": "ethanol",
+            "vanes": 5
         },
         "fuel_pump": {
             "input_pressure": 3,
             "output_overpressure": 3,
             "mass_flow": 25,
-            "medium": "lox"
+            "medium": "lox",
+            "vanes": 5
         }
     }
 }

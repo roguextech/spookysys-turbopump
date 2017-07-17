@@ -1,29 +1,34 @@
 {
-    "spec": {
-        "rpm": "95000",
-        "chamber_pressure": 20,
-        "turbine": {
-            "input_pressure": 140,
-            "output_overpressure": 3,
-            "medium": {
-                "type": "htp",
-                "concentration": 90,
-                "decomposition": 90
-            }
-        },
+    "of_ratio": 1.3,
+    "oxidizer_pump": {
+        "output_overpressure": 3,
+        "density": 1141,
+        "vanes": 5
+    },
+    "fuel_pump": {
+        "output_overpressure": 3,
+        "density": 842,
+        "vanes": 5
+    },
+    "turbine": {
+        "output_overpressure": 3,
+        "peroxide": {
+            "concentration": 90,
+            "decomposition": 90
+        }
+    },
+    "design_point": {
+        "rpm": "30000",
         "oxidizer_pump": {
-            "input_pressure": 3,
-            "output_overpressure": 3,
-            "mass_flow": 25,
-            "medium": "ethanol",
-            "vanes": 5
+            "input_pressure": 3
         },
         "fuel_pump": {
-            "input_pressure": 3,
-            "output_overpressure": 3,
-            "mass_flow": 25,
-            "medium": "lox",
-            "vanes": 5
-        }
+            "input_pressure": 3
+        },
+        "turbine": {
+            "input_pressure": 140
+        },
+        "chamber_pressure": 20,
+        "mass_flow": 50
     }
 }

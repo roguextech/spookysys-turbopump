@@ -33,3 +33,7 @@ evaluate_pump(n=90000, Q=m3_to_l(lb_to_kg(17.6)/1400), P=psi_to_bar(5946))
 print()
 print("Spica proposal:")
 evaluate_pump(n=30000, Q=25, P=25)
+
+# turbine 
+# omega_s should be 0.6 for best efficiency of n_ts=87%
+# omega_s high limit is 1.0 which leaves velocity in flow

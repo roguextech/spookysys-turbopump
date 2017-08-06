@@ -1,7 +1,7 @@
-import passes.empirical.lobanoff.impeller.head_rise
-import passes.empirical.lobanoff.impeller.head_constant
-import passes.empirical.lobanoff.impeller.capacity_constant
-from passes.empirical.lobanoff import impeller
+import empirical.lobanoff.impeller.head_rise
+import empirical.lobanoff.impeller.head_constant
+import empirical.lobanoff.impeller.capacity_constant
+from empirical.lobanoff import impeller
 from helpers import *
 
 # Note: Potassium permanganate activated alumina balls are cheap

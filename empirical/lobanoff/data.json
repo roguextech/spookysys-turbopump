@@ -66,7 +66,7 @@
             {
                 "vanes": 7,
                 "discharge_angle": 27,
-                "droop": true,
+                "droop": true, 
                 "data": [
                     [0, 0],
                     [200, 3.5],

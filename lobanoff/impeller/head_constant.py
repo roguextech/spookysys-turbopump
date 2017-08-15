@@ -17,7 +17,7 @@ def get_limits():
     vanes = list(chain.from_iterable(
         x['vanes'] for x in _jsondata()
     ))
-    return min(vanes), (max(vanes) + 1)
+    return min(vanes), max(vanes)
 
 
 @memoized
@@ -42,7 +42,7 @@ def plot():
     offset_coeffs, slope = get_coeffs()
 
     # Plot fitted curves
-    for vanes in range(*get_limits()):
+    for vanes in range(get_limits()[0], get_limits()[1] + 1):
         offset = np.polyval(offset_coeffs, vanes)
         x = np.arange(0, 3600 + 1, 400)
         y = offset + slope * x

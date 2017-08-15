@@ -31,7 +31,7 @@ def get_vane_limits():
     vanes = list(chain.from_iterable(
         x['vanes'] for x in _jsondata()
     ))
-    return min(vanes), max(vanes) + 1
+    return min(vanes), max(vanes)
 
 
 @memoized
@@ -53,21 +53,21 @@ def plot():
     for curve in _jsondata():
         vanes = curve['vanes']
         Ns, Km2 = np.transpose(curve['points']).tolist()
-        plt.plot(Ns, Km2, 'r-')
+        plt.plot(Ns, Km2, 'r--')
 
     # Plot fitted curves
-    for vanes in np.arange(get_vane_limits()[0], get_vane_limits()[1] - 0.5, step=0.5):
+    for vanes in np.arange(get_vane_limits()[0], get_vane_limits()[1] + 0.5, step=0.5):
         startpoint = 400
         endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
         x = np.arange(startpoint, endpoint + 1, 50)
         y = polynomial.polyval2d(np.ones(len(x)) * vanes, x, get_Km2_coeffs())
-        plt.plot(x, y, 'g--')
+        plt.plot(x, y, 'g-')
         label = str(vanes)
         label_xy = (endpoint, y[-1])
         plt.annotate(label, xy=label_xy)
 
     # plot limit of data
-    vanespace = range(*get_vane_limits())
+    vanespace = np.linspace(*get_vane_limits())
     limit_x = np.polyval(get_Ns_limit_coeffs(), vanespace)
     limit_y = polynomial.polyval2d(vanespace, limit_x, get_Km2_coeffs())
     plt.plot(limit_x, limit_y)

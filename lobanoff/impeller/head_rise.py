@@ -35,7 +35,7 @@ def get_vane_limits(droop=None):
         or (droop and x['droop'])
         or (not droop and not x['droop'])
     ]
-    return min(vanes), max(vanes) + 1
+    return min(vanes), max(vanes)
 
 
 @memoized
@@ -65,21 +65,22 @@ def plot():
     for curve in _jsondata():
         vanes = curve['vanes']
         Ns, phr = np.transpose(curve['points']).tolist()
-        plt.plot(Ns, phr, 'r-')
+        plt.plot(Ns, phr, 'r--')
         label = str(curve['vanes']) + ' vanes, ' + str(curve['discharge_angle']) + ' deg' + (', droop' if curve['droop'] else '')
         label_xy = (Ns[-1], phr[-1])
         plt.annotate(label, xy=label_xy)
 
     # Plot fitted curves
-    for vanes in range(*get_vane_limits()):
+    for vanes in range(get_vane_limits()[0], get_vane_limits()[1] + 1):
         endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
-        space = np.arange(0, endpoint + 1, 50)
+        space = np.linspace(0, endpoint)
         phr = polynomial.polyval2d(np.ones(len(space)) * vanes, space, get_phr_coeffs())
-        plt.plot(space, phr, 'g--')
+        plt.plot(space, phr, 'g-')
 
     # plot limit of data
-    limit_Ns = np.polyval(get_Ns_limit_coeffs(), range(*get_vane_limits()))
-    limit_phr = polynomial.polyval2d(range(*get_vane_limits()), limit_Ns, get_phr_coeffs())
+    vanespace = np.linspace(*get_vane_limits())
+    limit_Ns = np.polyval(get_Ns_limit_coeffs(), vanespace)
+    limit_phr = polynomial.polyval2d(vanespace, limit_Ns, get_phr_coeffs())
     plt.plot(limit_Ns, limit_phr)
 
     plt.gca().set_title(__doc__)

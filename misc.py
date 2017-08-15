@@ -1,17 +1,15 @@
 """Miscellaneous helper functions and globals"""
+import functools
 import itertools
 import collections
 import numpy as np
-from os import path
-import json
 
-#mem = joblib.Memory(cachedir='./__cache__', verbose=0)
 
 class memoized(object):
-    '''Decorator. Caches a function's return value each time it is called.
+    """Decorator. Caches a function's return value each time it is called.
     If called later with the same arguments, the cached value is returned
     (not reevaluated).
-    '''
+    """
 
     def __init__(self, func):
         self.func = func
@@ -30,22 +28,18 @@ class memoized(object):
             return value
 
     def __repr__(self):
-        '''Return the function's docstring.'''
+        """Return the function's docstring."""
         return self.func.__doc__
 
     def __get__(self, obj, objtype):
-        '''Support instance methods.'''
+        """Support instance methods."""
         return functools.partial(self.__call__, obj)
 
 
-@memoized
-def jsondata():
-    with open(path.join(path.dirname(__file__), "data.json"), 'r') as file:
-        tmp = json.load(file)
-    return tmp
-
-
 def polyfit2d(x, y, z, order=3):
+    """Fit a polynomial surface to a dataset
+    Compatible with numpy.polynomial.polynomial.polyval2d
+    """
     ncols = (order + 1)**2
     G = np.zeros((x.size, ncols))
     ij = itertools.product(range(order + 1), range(order + 1))

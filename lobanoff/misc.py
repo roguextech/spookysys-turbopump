@@ -41,7 +41,8 @@ class memoized(object):
 @memoized
 def jsondata():
     with open(path.join(path.dirname(__file__), "data.json"), 'r') as file:
-        return json.load(file)
+        tmp = json.load(file)
+    return tmp
 
 
 def polyfit2d(x, y, z, order=3):

@@ -6,23 +6,29 @@ import numpy as np
 from matplotlib import pyplot as plt
 from itertools import chain
 from pprint import pprint
-from . import jsondata
+from . import _jsondata as _module_jsondata
 from ..misc import memoized, polyfit2d
 
 
+def _jsondata():
+    return _module_jsondata()['head_rise']
+
+
 @memoized
-def fitted_data():
+def get_coeffs():
+    data = _jsondata()
     fitdata = [
-        [np.ones(len(x['data'])) * x['vanes'] for x in jsondata()],
-        [np.transpose(x['data'])[0] for x in jsondata()],
-        [np.transpose(x['data'])[1] for x in jsondata()]
+        [np.ones(len(x['data'])) * x['vanes'] for x in data],
+        [np.transpose(x['data'])[0] for x in data],
+        [np.transpose(x['data'])[1] for x in data]
     ]
     fitdata = np.array([list(chain.from_iterable(x)) for x in fitdata])
     return polyfit2d(*fitdata, order=3)
 
 
 def plot():
-    for datum in jsondata()['head_rise']:
+    data = _jsondata()
+    for datum in data:
         vanes = datum['vanes']
         N_s, phr = np.transpose(datum["data"]).tolist()
         startpoint = N_s[0]
@@ -30,18 +36,17 @@ def plot():
         label = str(datum["vanes"]) + " vanes, " \
             + str(datum["discharge_angle"]) + " deg" \
             + (", droop" if datum["droop"] else "")
-        label = '.'
         label_xy = (N_s[-1], phr[-1])
-        plt.plot(N_s, phr, 'r--')
+        plt.plot(N_s, phr, 'r--', label=label)
 
-    for datum in jsondata()['head_rise']:
+    for datum in data:
         vanes = datum['vanes']
         N_s, phr = np.transpose(datum["data"]).tolist()
         startpoint = N_s[0]
         endpoint = N_s[-1]
         regular_N_s = np.arange(startpoint, endpoint + 1, 50)
         fitted_phr = polyval2d(np.ones(len(regular_N_s))
-                               * vanes, regular_N_s, fitted_data())
+                               * vanes, regular_N_s, get_coeffs())
         plt.plot(regular_N_s, fitted_phr, 'g-')
 
 #        plt.annotate(label, xy=label_xy)

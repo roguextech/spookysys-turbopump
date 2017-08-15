@@ -35,15 +35,17 @@ def get_vane_limits():
 
 
 @memoized
-def get_Ns_limit_coeffs():
-    """Polynomial coefficients relating vane-count to highest Km2 in graph"""
-    x, y = [], []
+def get_Ns_limits_coeffs():
+    """Low Ns limit and coefficients relating vane-count to high Ns limit"""
+    vane, upper = [], []
+    lower = 0
     for curve in _jsondata():
-        vanes = curve['vanes']
-        point = curve['points'][-1][0]
-        x.extend(vanes)
-        y.extend([point] * len(vanes))
-    return polyfit(x, y, deg=1)
+        Ns, _ = np.transpose(curve['points'])
+        lower = max(min(Ns), lower)
+        vane.extend(curve['vanes'])
+        upper.extend([max(Ns)] * len(curve['vanes']))
+    upper_coeffs = polyfit(vane, upper, deg=1)
+    return lower, upper_coeffs
 
 
 def plot():
@@ -57,18 +59,16 @@ def plot():
 
     # Plot fitted curves
     for vanes in np.arange(get_vane_limits()[0], get_vane_limits()[1] + 0.5, step=0.5):
-        startpoint = 400
-        endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
-        x = np.arange(startpoint, endpoint + 1, 50)
+        startpoint, endpoint_coeffs = get_Ns_limits_coeffs()
+        endpoint = np.polyval(endpoint_coeffs, vanes)
+        x = np.linspace(startpoint, endpoint)
         y = polynomial.polyval2d(np.ones(len(x)) * vanes, x, get_Km2_coeffs())
         plt.plot(x, y, 'g-')
-        label = str(vanes)
-        label_xy = (endpoint, y[-1])
-        plt.annotate(label, xy=label_xy)
+        plt.annotate(str(vanes), xy=(x[-1], y[-1]))
 
     # plot limit of data
     vanespace = np.linspace(*get_vane_limits())
-    limit_x = np.polyval(get_Ns_limit_coeffs(), vanespace)
+    limit_x = np.polyval(get_Ns_limits_coeffs()[1], vanespace)
     limit_y = polynomial.polyval2d(vanespace, limit_x, get_Km2_coeffs())
     plt.plot(limit_x, limit_y)
 

@@ -44,13 +44,10 @@ def plot():
 
     # Plot fitted curves
     for curve in _jsondata():
-        startpoint, endpoint = get_limits()
-        x = np.arange(startpoint, endpoint + 1, 50)
+        x = np.linspace(*get_limits())
         y = np.polyval(get_coeffs(curve), x)
         plt.plot(x, y, 'g-')
-        label = curve
-        label_xy = (endpoint, y[-1])
-        plt.annotate(label, xy=label_xy)
+        plt.annotate(curve, xy=(x[-1], y[-1]))
 
     plt.gca().set_title(__doc__)
     plt.gca().set_xticks(np.arange(0, 3400 + 400, 400))

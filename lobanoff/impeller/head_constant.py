@@ -44,12 +44,10 @@ def plot():
     # Plot fitted curves
     for vanes in range(get_limits()[0], get_limits()[1] + 1):
         offset = np.polyval(offset_coeffs, vanes)
-        x = np.arange(0, 3600 + 1, 400)
+        x = np.linspace(0, 3600)
         y = offset + slope * x
         plt.plot(x, y)
-        label = str(vanes)
-        label_xy = (x[-1], y[-1])
-        plt.annotate(label, xy=label_xy)
+        plt.annotate(str(vanes), xy=(x[-1], y[-1]))
 
     plt.gca().set_title(__doc__)
     plt.gca().set_xticks(np.arange(0, 3600 + 1, 400))

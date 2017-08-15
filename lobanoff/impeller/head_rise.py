@@ -64,18 +64,17 @@ def plot():
     # Plot data
     for curve in _jsondata():
         vanes = curve['vanes']
-        Ns, phr = np.transpose(curve['points']).tolist()
-        plt.plot(Ns, phr, 'r--')
+        x, y = np.transpose(curve['points']).tolist()
+        plt.plot(x, y, 'r--')
         label = str(curve['vanes']) + ' vanes, ' + str(curve['discharge_angle']) + ' deg' + (', droop' if curve['droop'] else '')
-        label_xy = (Ns[-1], phr[-1])
-        plt.annotate(label, xy=label_xy)
+        plt.annotate(label, xy=(x[-1], y[-1]))
 
     # Plot fitted curves
     for vanes in range(get_vane_limits()[0], get_vane_limits()[1] + 1):
         endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
-        space = np.linspace(0, endpoint)
-        phr = polynomial.polyval2d(np.ones(len(space)) * vanes, space, get_phr_coeffs())
-        plt.plot(space, phr, 'g-')
+        x = np.linspace(0, endpoint)
+        y = polynomial.polyval2d(np.ones(len(x)) * vanes, x, get_phr_coeffs())
+        plt.plot(x, y, 'g-')
 
     # plot limit of data
     vanespace = np.linspace(*get_vane_limits())

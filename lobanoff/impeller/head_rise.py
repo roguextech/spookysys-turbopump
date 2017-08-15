@@ -26,15 +26,16 @@ def get_phr_coeffs():
 
 
 @memoized
-def get_vanes(droop=None):
-    """Return the vane-counts for which there is data"""
-    return sorted(
+def get_vane_limits(droop=None):
+    """Return the minimum and maximum vane-count"""
+    vanes = [
         x['vanes']
         for x in _jsondata()
         if droop == None
         or (droop and x['droop'])
         or (not droop and not x['droop'])
-    )
+    ]
+    return min(vanes), max(vanes) + 1
 
 
 @memoized
@@ -61,24 +62,24 @@ def plot():
     """Plot raw data and polynomial approximation"""
 
     # Plot data
-    for datum in _jsondata():
-        vanes = datum['vanes']
-        Ns, phr = np.transpose(datum['points']).tolist()
+    for curve in _jsondata():
+        vanes = curve['vanes']
+        Ns, phr = np.transpose(curve['points']).tolist()
         plt.plot(Ns, phr, 'r-')
-        label = str(datum['vanes']) + ' vanes, ' + str(datum['discharge_angle']) + ' deg' + (', droop' if datum['droop'] else '')
+        label = str(curve['vanes']) + ' vanes, ' + str(curve['discharge_angle']) + ' deg' + (', droop' if curve['droop'] else '')
         label_xy = (Ns[-1], phr[-1])
         plt.annotate(label, xy=label_xy)
 
     # Plot fitted curves
-    for vanes in get_vanes():
+    for vanes in range(*get_vane_limits()):
         endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
         space = np.arange(0, endpoint + 1, 50)
         phr = polynomial.polyval2d(np.ones(len(space)) * vanes, space, get_phr_coeffs())
         plt.plot(space, phr, 'g--')
 
     # plot limit of data
-    limit_Ns = np.polyval(get_Ns_limit_coeffs(), get_vanes())
-    limit_phr = polynomial.polyval2d(get_vanes(), limit_Ns, get_phr_coeffs())
+    limit_Ns = np.polyval(get_Ns_limit_coeffs(), range(*get_vane_limits()))
+    limit_phr = polynomial.polyval2d(range(*get_vane_limits()), limit_Ns, get_phr_coeffs())
     plt.plot(limit_Ns, limit_phr)
 
     plt.gca().set_title(__doc__)

@@ -18,20 +18,20 @@ def get_Km2_coeffs():
     """Polynomial coefficients relating vane-count and specific speed to capacity constant"""
     fitdata = np.ndarray(shape=(3, 0), dtype=float)
     for curve in _jsondata():
-        x = np.ones(len(curve['points'])) * np.average(curve['vanes'])
         y, z = np.transpose(curve['points'])
-        fitdata = np.append(fitdata, [x, y, z], axis=1)
+        for vanes in curve['vanes']:
+            x = np.ones(len(curve['points'])) * vanes
+            fitdata = np.append(fitdata, [x, y, z], axis=1)
     return polyfit2d(*fitdata, order=2)
 
 
 @memoized
-def get_vanes():
+def get_vane_limits():
     """Return the vane-counts for which there is data"""
-    return sorted(
-        chain.from_iterable(
-            x['vanes'] for x in _jsondata()
-        )
-    )
+    vanes = list(chain.from_iterable(
+        x['vanes'] for x in _jsondata()
+    ))
+    return min(vanes), max(vanes) + 1
 
 
 @memoized
@@ -50,13 +50,13 @@ def plot():
     """Plot raw data and polynomial approximation"""
 
     # Plot data
-    for datum in _jsondata():
-        vanes = datum['vanes']
-        Ns, Km2 = np.transpose(datum['points']).tolist()
+    for curve in _jsondata():
+        vanes = curve['vanes']
+        Ns, Km2 = np.transpose(curve['points']).tolist()
         plt.plot(Ns, Km2, 'r-')
 
     # Plot fitted curves
-    for vanes in np.arange(min(get_vanes()), max(get_vanes()) + 0.5, 0.5):
+    for vanes in np.arange(get_vane_limits()[0], get_vane_limits()[1] - 0.5, step=0.5):
         startpoint = 400
         endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
         x = np.arange(startpoint, endpoint + 1, 50)
@@ -67,7 +67,7 @@ def plot():
         plt.annotate(label, xy=label_xy)
 
     # plot limit of data
-    vanespace = get_vanes()
+    vanespace = range(*get_vane_limits())
     limit_x = np.polyval(get_Ns_limit_coeffs(), vanespace)
     limit_y = polynomial.polyval2d(vanespace, limit_x, get_Km2_coeffs())
     plt.plot(limit_x, limit_y)

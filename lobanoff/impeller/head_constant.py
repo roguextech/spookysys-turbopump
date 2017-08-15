@@ -12,17 +12,19 @@ def _jsondata():
 
 
 @memoized
-def get_vanes():
+def get_limits():
     """Return the vane-counts for which there is data"""
-    return sorted(
-        chain.from_iterable(
-            x['vanes'] for x in _jsondata()
-        )
-    )
+    vanes = list(chain.from_iterable(
+        x['vanes'] for x in _jsondata()
+    ))
+    return min(vanes), (max(vanes) + 1)
 
 
 @memoized
 def get_coeffs():
+    """Calculate a set of coefficients relating vane-count to Ku at Ns=0
+    (="offset"), and a slope which is the same for all vane-counts.
+    """
     points = [x['points'] for x in _jsondata()]
     slope = np.average([(x[1][1] - x[0][1]) / (x[1][0] - x[0][0]) for x in points])
     offsets = [x[0][1] - slope * x[0][0] for x in points]
@@ -40,7 +42,7 @@ def plot():
     offset_coeffs, slope = get_coeffs()
 
     # Plot fitted curves
-    for vanes in get_vanes():
+    for vanes in range(*get_limits()):
         offset = np.polyval(offset_coeffs, vanes)
         x = np.arange(0, 3600 + 1, 400)
         y = offset + slope * x

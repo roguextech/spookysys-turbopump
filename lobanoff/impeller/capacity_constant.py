@@ -50,6 +50,7 @@ def get_Ns_limits_coeffs():
 
 def plot():
     """Plot raw data and polynomial approximation"""
+    plt.figure()
 
     # Plot data
     for curve in _jsondata():
@@ -78,7 +79,7 @@ def plot():
     plt.xlabel('Ns - Specific Speed')
     plt.ylabel('Km2 - Capacity Constant')
     plt.grid()
-    plt.show()
+    plt.draw()
 
 
 if __name__ == '__main__':

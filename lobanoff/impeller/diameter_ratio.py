@@ -36,6 +36,7 @@ def get_limits():
 
 def plot():
     """Plot raw data and polynomial approximation"""
+    plt.figure()
 
     # Plot data
     for curve in _jsondata():
@@ -55,7 +56,7 @@ def plot():
     plt.xlabel('Ns - Specific Speed')
     plt.ylabel('D1/D2 - Eye Diameter / Outside Diameter')
     plt.grid()
-    plt.show()
+    plt.draw()
 
 
 if __name__ == '__main__':

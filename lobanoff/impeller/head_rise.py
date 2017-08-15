@@ -60,6 +60,7 @@ def get_discharge_angle_coeffs():
 
 def plot():
     """Plot raw data and polynomial approximation"""
+    plt.figure()
 
     # Plot data
     for curve in _jsondata():
@@ -88,7 +89,7 @@ def plot():
     plt.xlabel('Ns - Specific Speed')
     plt.ylabel('Percent Head Rise from B.E.P. to shutoff')
     plt.grid()
-    plt.show()
+    plt.draw()
 
 
 if __name__ == '__main__':

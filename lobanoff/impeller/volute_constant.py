@@ -29,6 +29,7 @@ def get_Ns_limits():
 
 def plot():
     """Plot raw data and polynomial approximation"""
+    plt.figure()
 
     # Plot data
     x, y = _points()
@@ -45,7 +46,7 @@ def plot():
     plt.xlabel('Ns - Specific Speed')
     plt.ylabel('K3 - Volute Velocity Constant')
     plt.grid()
-    plt.show()
+    plt.draw()
 
 
 if __name__ == '__main__':

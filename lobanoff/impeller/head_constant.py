@@ -39,6 +39,9 @@ def get_coeffs():
 
 
 def plot():
+    """Plot polynomial approximation"""
+    plt.figure()
+
     offset_coeffs, slope = get_coeffs()
 
     # Plot fitted curves
@@ -55,7 +58,7 @@ def plot():
     plt.xlabel('Ns - Specific Speed')
     plt.ylabel('Ku - Head Constant')
     plt.grid()
-    plt.show()
+    plt.draw()
 
 
 if __name__ == '__main__':

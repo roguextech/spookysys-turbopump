@@ -5,6 +5,7 @@ import lobanoff.impeller.head_rise
 import lobanoff.impeller.head_constant
 import lobanoff.impeller.capacity_constant
 import lobanoff.impeller.diameter_ratio
+import lobanoff.impeller.volute_constant
 from units import ureg
 
 print(ureg.pump_Ns)
@@ -20,3 +21,4 @@ lobanoff.impeller.head_rise.plot()
 lobanoff.impeller.head_constant.plot()
 lobanoff.impeller.capacity_constant.plot()
 lobanoff.impeller.diameter_ratio.plot()
+lobanoff.impeller.volute_constant.plot()

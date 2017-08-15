@@ -12,7 +12,7 @@ def _jsondata():
 
 
 @memoized
-def get_limits():
+def get_vane_limits():
     """Return the vane-counts for which there is data"""
     vanes = list(chain.from_iterable(
         x['vanes'] for x in _jsondata()
@@ -42,7 +42,7 @@ def plot():
     offset_coeffs, slope = get_coeffs()
 
     # Plot fitted curves
-    for vanes in range(get_limits()[0], get_limits()[1] + 1):
+    for vanes in range(get_vane_limits()[0], get_vane_limits()[1] + 1):
         offset = np.polyval(offset_coeffs, vanes)
         x = np.linspace(0, 3600)
         y = offset + slope * x

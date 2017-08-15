@@ -13,9 +13,12 @@ def _jsondata():
 
 @memoized
 def get_vanes():
-    """Return the number of vanes for which there is data"""
-    vanes = chain.from_iterable([x['vanes'] for x in _jsondata()])
-    return sorted(vanes)
+    """Return the vane-counts for which there is data"""
+    return sorted(
+        chain.from_iterable(
+            x['vanes'] for x in _jsondata()
+        )
+    )
 
 
 @memoized
@@ -36,13 +39,14 @@ def get_coeffs():
 def plot():
     offset_coeffs, slope = get_coeffs()
 
+    # Plot fitted curves
     for vanes in get_vanes():
         offset = np.polyval(offset_coeffs, vanes)
-        space_Ns = np.arange(0, 3600 + 1, 400)
-        fitted_Ku = offset + slope * space_Ns
-        plt.plot(space_Ns, fitted_Ku)
+        x = np.arange(0, 3600 + 1, 400)
+        y = offset + slope * x
+        plt.plot(x, y)
         label = str(vanes)
-        label_xy = (space_Ns[-1], fitted_Ku[-1])
+        label_xy = (x[-1], y[-1])
         plt.annotate(label, xy=label_xy)
 
     plt.gca().set_title(__doc__)
@@ -52,3 +56,7 @@ def plot():
     plt.ylabel('Ku - Head Constant')
     plt.grid()
     plt.show()
+
+
+if __name__ == '__main__':
+    plot()

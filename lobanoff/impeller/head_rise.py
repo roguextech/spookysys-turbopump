@@ -15,43 +15,41 @@ def _jsondata():
 
 @memoized
 def get_phr_coeffs():
-    """Polynomial coefficients relating number of vanes and specific speed to percent head rise"""
-    fitdata = [
-        [np.ones(len(x['points'])) * x['vanes'] for x in _jsondata()],
-        [np.transpose(x['points'])[0] for x in _jsondata()],
-        [np.transpose(x['points'])[1] for x in _jsondata()]
-    ]
-    fitdata = np.array([list(chain.from_iterable(x)) for x in fitdata])
+    """Polynomial coefficients relating vane-count and specific speed to percent head rise"""
+    fitdata = np.ndarray(shape=(3, 0), dtype=float)
+    for curve in _jsondata():
+        x = np.ones(len(curve['points'])) * np.average(curve['vanes'])
+        y, z = np.transpose(curve['points'])
+        fitdata = np.append(fitdata, [x, y, z], axis=1)
+
     return polyfit2d(*fitdata, order=3)
 
 
 @memoized
 def get_vanes(droop=None):
-    """Return the number of vanes for which there is data"""
-    vanes = [x['vanes'] for x in _jsondata() if droop == None or (droop and x['droop']) or (not droop and not x['droop'])]
-    return sorted(vanes)
-
-
-@memoized
-def get_vanes(droop=None):
-    """Return lowest and highest number of vanes for which there is data"""
-    vanes = [x['vanes'] for x in _jsondata() if droop == None or (droop and x['droop']) or (not droop and not x['droop'])]
-    return sorted(vanes)
+    """Return the vane-counts for which there is data"""
+    return sorted(
+        x['vanes']
+        for x in _jsondata()
+        if droop == None
+        or (droop and x['droop'])
+        or (not droop and not x['droop'])
+    )
 
 
 @memoized
 def get_Ns_limit_coeffs():
-    """Polynomial coefficients relating number of vanes to highest Ns in graph"""
+    """Polynomial coefficients relating vane-count to highest Ns in graph"""
     vanes = [x['vanes'] for x in _jsondata()]
     val = [x['points'][-1][0] for x in _jsondata()]
-    coeffs = polyfit(vanes, val, 3)
+    coeffs = polyfit(vanes, val, 2)
     test = np.polyval(coeffs, vanes)
     return coeffs
 
 
 @memoized
 def get_discharge_angle_coeffs():
-    """Polynomial coefficients relating number of vanes to discharge angle"""
+    """Polynomial coefficients relating vane-count to discharge angle"""
     vanes = [x['vanes'] for x in _jsondata()]
     val = [x['discharge_angle'] for x in _jsondata()]
     coeffs = polyfit(vanes, val, 3)
@@ -62,29 +60,26 @@ def get_discharge_angle_coeffs():
 def plot():
     """Plot raw data and polynomial approximation"""
 
+    # Plot data
     for datum in _jsondata():
         vanes = datum['vanes']
-        N_s, phr = np.transpose(datum['points']).tolist()
-        startpoint = N_s[0]
-        endpoint = N_s[-1]
-        plt.plot(N_s, phr, 'r--')
+        Ns, phr = np.transpose(datum['points']).tolist()
+        plt.plot(Ns, phr, 'r-')
         label = str(datum['vanes']) + ' vanes, ' + str(datum['discharge_angle']) + ' deg' + (', droop' if datum['droop'] else '')
-        label_xy = (N_s[-1], phr[-1])
+        label_xy = (Ns[-1], phr[-1])
         plt.annotate(label, xy=label_xy)
 
-    for datum in _jsondata():
-        vanes = datum['vanes']
-        N_s, phr = np.transpose(datum['points']).tolist()
-        startpoint = N_s[0]
-        endpoint = N_s[-1]
-        regular_N_s = np.arange(startpoint, endpoint + 1, 50)
-        fitted_phr = polynomial.polyval2d(np.ones(len(regular_N_s)) * vanes, regular_N_s, get_phr_coeffs())
-        plt.plot(regular_N_s, fitted_phr, 'g-')
+    # Plot fitted curves
+    for vanes in get_vanes():
+        endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
+        space = np.arange(0, endpoint + 1, 50)
+        phr = polynomial.polyval2d(np.ones(len(space)) * vanes, space, get_phr_coeffs())
+        plt.plot(space, phr, 'g--')
 
     # plot limit of data
-    fitted_limit_Ns = np.polyval(get_Ns_limit_coeffs(), get_vanes())
-    fitted_limit_phr = polynomial.polyval2d(get_vanes(), fitted_limit_Ns, get_phr_coeffs())
-    plt.plot(fitted_limit_Ns, fitted_limit_phr)
+    limit_Ns = np.polyval(get_Ns_limit_coeffs(), get_vanes())
+    limit_phr = polynomial.polyval2d(get_vanes(), limit_Ns, get_phr_coeffs())
+    plt.plot(limit_Ns, limit_phr)
 
     plt.gca().set_title(__doc__)
     plt.gca().set_xticks(np.arange(0, endpoint + 1, 400))

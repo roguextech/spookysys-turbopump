@@ -1,4 +1,4 @@
-"""Figure 3-8: Volute velocity constant [US]"""
+"""Figure 3-8: K3 - Reduced volute speed (C3), Volute velocity constant [US]"""
 import numpy as np
 from matplotlib import pyplot as plt
 from utils import memoized

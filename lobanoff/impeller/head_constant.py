@@ -1,4 +1,4 @@
-"""Figure 3-3: Head Constant Ku [US]"""
+"""Figure 3-3: Ku - Reduced peripheral speed (U2), head constant, speed Constant"""
 from __future__ import print_function
 from itertools import chain
 import numpy as np

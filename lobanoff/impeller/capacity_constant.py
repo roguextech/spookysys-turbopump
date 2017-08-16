@@ -1,4 +1,4 @@
-"""Figure 3-4: Capacity Constant Km2 [US]"""
+"""Figure 3-4: Km2 - Reduced meridional discharge speed (Cm2), capacity constant"""
 from itertools import chain
 import numpy as np
 from numpy.polynomial import polynomial

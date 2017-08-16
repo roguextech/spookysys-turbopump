@@ -26,9 +26,9 @@ def get_limits():
     """Get the allowable range for Ns"""
     upper, _ = _points('upper')
     lower, _ = _points('lower')
-    min_ = max(min(upper), min(lower))
-    max_ = min(max(upper), max(lower))
-    return min_, max_
+    startpoint = max(min(upper), min(lower))
+    endpoint = min(max(upper), max(lower))
+    return startpoint, endpoint
 
 
 def plot():

@@ -18,15 +18,15 @@ def _points():
 @memoized
 def get_coeffs():
     """Polynomial coefficients relating Cm1 and Ut to NPSHR"""
-    return polyfit2d(*_points(), order=2)
+    return polyfit2d(*_points(), order=3)
 
 
 @memoized
 def get_limits():
     """Return limits"""
     Cm1, Ut, npshr = _points()
-    # return min(Cm1), max(npshr), min(Ut), max(Ut)
-    return (5), (80), (30, 120)
+    # max npshr is 80
+    return min(Cm1), 80, (min(Ut), max(Ut))
 
 
 def plot():

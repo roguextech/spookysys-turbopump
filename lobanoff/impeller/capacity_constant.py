@@ -1,23 +1,22 @@
 """Figure 3-4: Capacity Constant Km2 [US]"""
-from __future__ import print_function
 from itertools import chain
 import numpy as np
 from numpy.polynomial import polynomial
 from numpy import polyfit
 from matplotlib import pyplot as plt
-from misc import memoized, polyfit2d
-from . import _jsondata as _module_jsondata
+from utils import memoized, polyfit2d
+from lobanoff.data import _data as _lobanoff_data
 
 
-def _jsondata():
-    return _module_jsondata()['capacity_constant']
+def _data():
+    return _lobanoff_data()['impeller']['capacity_constant']
 
 
 @memoized
 def get_Km2_coeffs():
     """Polynomial coefficients relating vane-count and specific speed to capacity constant"""
     fitdata = np.ndarray(shape=(3, 0), dtype=float)
-    for curve in _jsondata():
+    for curve in _data():
         y, z = np.transpose(curve['points'])
         for vanes in curve['vanes']:
             x = np.ones(len(curve['points'])) * vanes
@@ -29,7 +28,7 @@ def get_Km2_coeffs():
 def get_vane_limits():
     """Return the vane-counts for which there is data"""
     vanes = list(chain.from_iterable(
-        x['vanes'] for x in _jsondata()
+        x['vanes'] for x in _data()
     ))
     return min(vanes), max(vanes)
 
@@ -39,7 +38,7 @@ def get_Ns_limits_coeffs():
     """Low Ns limit and coefficients relating vane-count to high Ns limit"""
     vane, upper = [], []
     lower = 0
-    for curve in _jsondata():
+    for curve in _data():
         Ns, _ = np.transpose(curve['points'])
         lower = max(min(Ns), lower)
         vane.extend(curve['vanes'])
@@ -53,7 +52,7 @@ def plot():
     plt.figure()
 
     # Plot data
-    for curve in _jsondata():
+    for curve in _data():
         vanes = curve['vanes']
         Ns, Km2 = np.transpose(curve['points']).tolist()
         plt.plot(Ns, Km2, 'r--')
@@ -84,3 +83,4 @@ def plot():
 
 if __name__ == '__main__':
     plot()
+    plt.show()

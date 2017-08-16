@@ -1,20 +1,17 @@
 """Figure 3-5: Impeller eye to outside diameter ratio [US]"""
 from __future__ import print_function
-from itertools import chain
 import numpy as np
-from numpy.polynomial import polynomial
-from numpy import polyfit
 from matplotlib import pyplot as plt
-from misc import memoized, polyfit2d
-from . import _jsondata as _module_jsondata
+from utils import memoized
+from lobanoff.data import _data as _lobanoff_data
 
 
-def _jsondata():
-    return _module_jsondata()['diameter_ratio']
+def _data():
+    return _lobanoff_data()['impeller']['diameter_ratio']
 
 
 def _points(curve):
-    return np.transpose(_jsondata()[curve])
+    return np.transpose(_data()[curve])
 
 
 @memoized
@@ -39,12 +36,12 @@ def plot():
     plt.figure()
 
     # Plot data
-    for curve in _jsondata():
+    for curve in _data():
         x, y = _points(curve)
         plt.plot(x, y, 'r--')
 
     # Plot fitted curves
-    for curve in _jsondata():
+    for curve in _data():
         x = np.linspace(*get_limits())
         y = np.polyval(get_coeffs(curve), x)
         plt.plot(x, y, 'g-')
@@ -61,3 +58,4 @@ def plot():
 
 if __name__ == '__main__':
     plot()
+    plt.show()

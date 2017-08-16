@@ -3,19 +3,19 @@ from __future__ import print_function
 from itertools import chain
 import numpy as np
 from matplotlib import pyplot as plt
-from misc import memoized
-from . import _jsondata as _module_jsondata
+from utils import memoized
+from lobanoff.data import _data as _lobanoff_data
 
 
-def _jsondata():
-    return _module_jsondata()['head_constant']
+def _data():
+    return _lobanoff_data()['impeller']['head_constant']
 
 
 @memoized
 def get_vane_limits():
     """Return the vane-counts for which there is data"""
     vanes = list(chain.from_iterable(
-        x['vanes'] for x in _jsondata()
+        x['vanes'] for x in _data()
     ))
     return min(vanes), max(vanes)
 
@@ -25,11 +25,11 @@ def get_coeffs():
     """Calculate a set of coefficients relating vane-count to Ku at Ns=0
     (="offset"), and a slope which is the same for all vane-counts.
     """
-    points = [x['points'] for x in _jsondata()]
+    points = [x['points'] for x in _data()]
     slope = np.average([(x[1][1] - x[0][1]) / (x[1][0] - x[0][0]) for x in points])
     offsets = [x[0][1] - slope * x[0][0] for x in points]
 
-    vanes = [x['vanes'] for x in _jsondata()]
+    vanes = [x['vanes'] for x in _data()]
     offsets_expanded = [[x] * len(y) for x, y in zip(offsets, vanes)]
     offsets_expanded = list(chain.from_iterable(offsets_expanded))
     vanes_expanded = list(chain.from_iterable(vanes))
@@ -63,3 +63,4 @@ def plot():
 
 if __name__ == '__main__':
     plot()
+    plt.show()

@@ -1,23 +1,22 @@
 """Figure 3-2: Percent Head Rise [US]"""
 from __future__ import print_function
-from itertools import chain
 import numpy as np
 from numpy.polynomial import polynomial
 from numpy import polyfit
 from matplotlib import pyplot as plt
-from misc import memoized, polyfit2d
-from . import _jsondata as _module_jsondata
+from utils import memoized, polyfit2d
+from lobanoff.data import _data as _lobanoff_data
 
 
-def _jsondata():
-    return _module_jsondata()['head_rise']
+def _data():
+    return _lobanoff_data()['impeller']['head_rise']
 
 
 @memoized
 def get_phr_coeffs():
     """Polynomial coefficients relating vane-count and specific speed to percent head rise"""
     fitdata = np.ndarray(shape=(3, 0), dtype=float)
-    for curve in _jsondata():
+    for curve in _data():
         x = np.ones(len(curve['points'])) * np.average(curve['vanes'])
         y, z = np.transpose(curve['points'])
         fitdata = np.append(fitdata, [x, y, z], axis=1)
@@ -30,7 +29,7 @@ def get_vane_limits(droop=None):
     """Return the minimum and maximum vane-count"""
     vanes = [
         x['vanes']
-        for x in _jsondata()
+        for x in _data()
         if droop == None
         or (droop and x['droop'])
         or (not droop and not x['droop'])
@@ -41,8 +40,8 @@ def get_vane_limits(droop=None):
 @memoized
 def get_Ns_limit_coeffs():
     """Polynomial coefficients relating vane-count to highest Ns in graph"""
-    vanes = [x['vanes'] for x in _jsondata()]
-    val = [x['points'][-1][0] for x in _jsondata()]
+    vanes = [x['vanes'] for x in _data()]
+    val = [x['points'][-1][0] for x in _data()]
     coeffs = polyfit(vanes, val, 2)
     test = np.polyval(coeffs, vanes)
     return coeffs
@@ -51,8 +50,8 @@ def get_Ns_limit_coeffs():
 @memoized
 def get_discharge_angle_coeffs():
     """Polynomial coefficients relating vane-count to discharge angle"""
-    vanes = [x['vanes'] for x in _jsondata()]
-    val = [x['discharge_angle'] for x in _jsondata()]
+    vanes = [x['vanes'] for x in _data()]
+    val = [x['discharge_angle'] for x in _data()]
     coeffs = polyfit(vanes, val, 3)
     test = np.polyval(coeffs, vanes)
     return coeffs
@@ -63,7 +62,7 @@ def plot():
     plt.figure()
 
     # Plot data
-    for curve in _jsondata():
+    for curve in _data():
         vanes = curve['vanes']
         x, y = np.transpose(curve['points']).tolist()
         plt.plot(x, y, 'r--')
@@ -94,3 +93,4 @@ def plot():
 
 if __name__ == '__main__':
     plot()
+    plt.show()

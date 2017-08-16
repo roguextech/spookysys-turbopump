@@ -1,4 +1,5 @@
-"""Miscellaneous helper functions and globals"""
+"""Miscellaneous helper functions"""
+from __future__ import unicode_literals
 import functools
 import itertools
 import collections

@@ -1,16 +1,18 @@
 """Figure 3-6: NPSHR prediction chart [US]"""
 from __future__ import print_function
-from itertools import chain
 import numpy as np
 from numpy.polynomial import polynomial
-from numpy import polyfit
 from matplotlib import pyplot as plt
-from misc import memoized, polyfit2d
-from . import _jsondata as _module_jsondata
+from utils import memoized, polyfit2d
+from lobanoff.data import _data as _lobanoff_data
+
+
+def _data():
+    return _lobanoff_data()['impeller']['npshr']
 
 
 def _points():
-    return np.transpose(_module_jsondata()['npshr'])
+    return np.transpose(_data())
 
 
 @memoized
@@ -59,3 +61,4 @@ def plot():
 
 if __name__ == '__main__':
     plot()
+    plt.show()

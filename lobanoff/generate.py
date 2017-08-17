@@ -1,3 +1,5 @@
+"""Generate impeller as per Lobanoff's chapter"""
+from __future__ import print_function
 import numpy as np
 from numpy.polynomial import polynomial
 from scipy.special import expit

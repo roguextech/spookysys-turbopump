@@ -2,10 +2,11 @@
 from __future__ import print_function
 import numpy as np
 from numpy.polynomial import polynomial
-from numpy import polyfit
 from matplotlib import pyplot as plt
 from utils import memoized, polyfit2d
+from units import ureg
 from lobanoff.data import _data as _lobanoff_data
+from lobanoff.impeller.discharge_angle import get_limits as get_vane_limits
 
 
 def _data():
@@ -13,28 +14,14 @@ def _data():
 
 
 @memoized
-def get_phr_coeffs():
+def get_coeffs():
     """Polynomial coefficients relating vane-count and specific speed to percent head rise"""
     fitdata = np.ndarray(shape=(3, 0), dtype=float)
     for curve in _data():
         x = np.ones(len(curve['points'])) * np.average(curve['vanes'])
         y, z = np.transpose(curve['points'])
         fitdata = np.append(fitdata, [x, y, z], axis=1)
-
     return polyfit2d(*fitdata, order=3)
-
-
-@memoized
-def get_vane_limits(droop=None):
-    """Return the minimum and maximum vane-count"""
-    vanes = [
-        x['vanes']
-        for x in _data()
-        if droop == None
-        or (droop and x['droop'])
-        or (not droop and not x['droop'])
-    ]
-    return min(vanes), max(vanes)
 
 
 @memoized
@@ -42,17 +29,7 @@ def get_Ns_limit_coeffs():
     """Polynomial coefficients relating vane-count to highest Ns in graph"""
     vanes = [x['vanes'] for x in _data()]
     val = [x['points'][-1][0] for x in _data()]
-    coeffs = polyfit(vanes, val, 2)
-    test = np.polyval(coeffs, vanes)
-    return coeffs
-
-
-@memoized
-def get_discharge_angle_coeffs():
-    """Polynomial coefficients relating vane-count to discharge angle"""
-    vanes = [x['vanes'] for x in _data()]
-    val = [x['discharge_angle'] for x in _data()]
-    coeffs = polyfit(vanes, val, 3)
+    coeffs = np.polyfit(vanes, val, 2)
     test = np.polyval(coeffs, vanes)
     return coeffs
 
@@ -73,13 +50,13 @@ def plot():
     for vanes in range(get_vane_limits()[0], get_vane_limits()[1] + 1):
         endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
         x = np.linspace(0, endpoint)
-        y = polynomial.polyval2d(np.ones(len(x)) * vanes, x, get_phr_coeffs())
+        y = polynomial.polyval2d(np.ones(len(x)) * vanes, x, get_coeffs())
         plt.plot(x, y, 'g-')
 
     # plot limit of data
     vanespace = np.linspace(*get_vane_limits())
     limit_Ns = np.polyval(get_Ns_limit_coeffs(), vanespace)
-    limit_phr = polynomial.polyval2d(vanespace, limit_Ns, get_phr_coeffs())
+    limit_phr = polynomial.polyval2d(vanespace, limit_Ns, get_coeffs())
     plt.plot(limit_Ns, limit_phr)
 
     plt.gca().set_title(__doc__)

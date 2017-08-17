@@ -4,6 +4,7 @@ from itertools import chain
 import numpy as np
 from matplotlib import pyplot as plt
 from utils import memoized
+from units import ureg
 from lobanoff.data import _data as _lobanoff_data
 
 
@@ -64,3 +65,13 @@ def plot():
 if __name__ == '__main__':
     plot()
     plt.show()
+
+
+@ureg.wraps('', ('pump_Ns_us', 'count'))
+def calc(Ns, vanes):
+    """Calculate Ku, reduced U2"""
+    startpoint, endpoint = get_vane_limits()
+    assert startpoint <= vanes <= endpoint
+    offset_coeffs, slope = get_coeffs()
+    offset = np.polyval(offset_coeffs, vanes)
+    return offset + slope * Ns

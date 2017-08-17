@@ -2,6 +2,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 from utils import memoized
+from units import ureg
 from lobanoff.data import _data as _lobanoff_data
 
 
@@ -52,3 +53,10 @@ def plot():
 if __name__ == '__main__':
     plot()
     plt.show()
+
+
+@ureg.wraps('', ('pump_Ns_us'))
+def calc(Ns):
+    startpoint, endpoint = get_Ns_limits()
+    assert startpoint <= Ns <= endpoint
+    return np.polyval(get_coeffs(), Ns)

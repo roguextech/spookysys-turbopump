@@ -1,8 +1,10 @@
 """Figure 3-5: Impeller eye to outside diameter ratio [US]"""
 from __future__ import print_function
 import numpy as np
+from scipy.special import expit
 from matplotlib import pyplot as plt
 from utils import memoized
+from units import ureg
 from lobanoff.data import _data as _lobanoff_data
 
 
@@ -59,3 +61,13 @@ def plot():
 if __name__ == '__main__':
     plot()
     plt.show()
+
+
+@ureg.wraps('', ('pump_Ns_us', ''))
+def calc(Ns, tweak_eye_diameter):
+    """Calculate D2/D1"""
+    startpoint, endpoint = get_limits()
+    assert startpoint <= Ns <= endpoint
+    lower = np.polyval(get_coeffs('lower'), Ns)
+    upper = np.polyval(get_coeffs('upper'), Ns)
+    return lower + (upper - lower) * expit(tweak_eye_diameter)

@@ -4,6 +4,7 @@ import numpy as np
 from numpy.polynomial import polynomial
 from matplotlib import pyplot as plt
 from utils import memoized, polyfit2d
+from units import ureg
 from lobanoff.data import _data as _lobanoff_data
 
 
@@ -62,3 +63,14 @@ def plot():
 if __name__ == '__main__':
     plot()
     plt.show()
+
+
+@ureg.wraps('ft', ('ft/s', 'ft/s'))
+def calc(Cm1, Ut):
+    """Calculate NPSHR"""
+    startpoint_Cm1, endpoint_npshr, (startpoint_Ut, endpoint_Ut) = get_limits()
+    assert startpoint_Ut <= Ut <= endpoint_Ut
+    assert startpoint_Cm1 <= Cm1
+    npshr = polynomial.polyval2d(Cm1, Ut, get_coeffs())
+    assert npshr <= endpoint_npshr
+    return npshr

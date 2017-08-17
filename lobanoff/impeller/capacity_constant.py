@@ -2,9 +2,9 @@
 from itertools import chain
 import numpy as np
 from numpy.polynomial import polynomial
-from numpy import polyfit
 from matplotlib import pyplot as plt
 from utils import memoized, polyfit2d
+from units import ureg
 from lobanoff.data import _data as _lobanoff_data
 
 
@@ -43,7 +43,7 @@ def get_Ns_limits_coeffs():
         lower = max(min(Ns), lower)
         vane.extend(curve['vanes'])
         upper.extend([max(Ns)] * len(curve['vanes']))
-    upper_coeffs = polyfit(vane, upper, deg=1)
+    upper_coeffs = np.polyfit(vane, upper, deg=1)
     return lower, upper_coeffs
 
 
@@ -84,3 +84,12 @@ def plot():
 if __name__ == '__main__':
     plot()
     plt.show()
+
+
+@ureg.wraps('', ('pump_Ns_us', 'count'))
+def calc(Ns, vanes):
+    """Calculate Km2, reduced Cm2"""
+    startpoint, endpoint_coeffs = get_Ns_limits_coeffs()
+    endpoint = np.polyval(endpoint_coeffs, vanes)
+    assert startpoint <= Ns <= endpoint
+    return polynomial.polyval2d(vanes, Ns, get_Km2_coeffs())

@@ -9,7 +9,7 @@ from lobanoff.graphs.capacity_constant import calc as calc_capacity_constant
 from lobanoff.graphs.diameter_ratio import calc as calc_diameter_ratio
 from lobanoff.graphs.discharge_angle import calc as calc_discharge_angle
 from lobanoff.graphs.head_constant import calc as calc_head_constant
-#from lobanoff.graphs.head_rise import calc as calc_head_rise
+from lobanoff.graphs.head_rise_shutoff import calc as calc_head_rise_shutoff
 from lobanoff.graphs.npshr import calc as calc_npshr
 from lobanoff.graphs.volute_constant import calc as calc_volute_constant
 from lobanoff.graphs.volute_misc import calc_volute_width, calc_cutwater_diameter
@@ -87,6 +87,9 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
     # Volute cutwater diameter
     D3 = D2 * calc_cutwater_diameter(Ns, tweak_cutwater_diameter)
 
+    # Head rise at shutoff
+    head_rise_shutoff = calc_head_rise_shutoff(Ns, vanes)
+
     return {
         'D1': D1,
         'D2': D2,
@@ -104,7 +107,8 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
         'C3': C3,
         'Ut': Ut,
         'U2': U2,
-        'discharge_angle': discharge_angle
+        'discharge_angle': discharge_angle,
+        'head_rise_shutoff': head_rise_shutoff
     }
 
 

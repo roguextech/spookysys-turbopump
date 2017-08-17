@@ -1,4 +1,4 @@
-"""Figure 3-2: Percent Head Rise [US]"""
+"""Figure 3-2: Percent Head Rise at Shutoff [US]"""
 from __future__ import print_function
 import numpy as np
 from numpy.polynomial import polynomial
@@ -71,3 +71,10 @@ def plot():
 if __name__ == '__main__':
     plot()
     plt.show()
+
+
+@ureg.wraps('', ('pump_Ns_us', 'count'))
+def calc(Ns, vanes):
+    endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
+    assert 0 <= Ns <= endpoint
+    return polynomial.polyval2d(vanes, Ns, get_coeffs())

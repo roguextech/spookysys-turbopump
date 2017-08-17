@@ -24,7 +24,7 @@ def get_coeffs():
 @memoized
 def get_limits():
     """Return limits"""
-    Cm1, Ut, npshr = _points()
+    Cm1, Ut, _ = _points()
     # max npshr is 80
     return min(Cm1), 80, (min(Ut), max(Ut))
 

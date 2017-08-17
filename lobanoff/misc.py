@@ -1,3 +1,4 @@
+"""Miscellaneous functions for Lobanoff method"""
 from units import ureg
 
 

@@ -1,3 +1,5 @@
+"""Generate impeller as per Lobanoff's chapter"""
+from __future__ import print_function
 import numpy as np
 from numpy.polynomial import polynomial
 from scipy.special import expit
@@ -58,6 +60,7 @@ def calc_npshr(Cm1, Ut):
 
 @ureg.wraps('', ('pump_Ns_us'))
 def calc_volute_constant(Ns):
+    """Calculate K3 - reduced volute flow speed (C3)"""
     startpoint, endpoint = volute_constant.get_Ns_limits()
     assert startpoint <= Ns <= endpoint
     return np.polyval(volute_constant.get_coeffs(), Ns)

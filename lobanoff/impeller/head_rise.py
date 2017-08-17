@@ -30,7 +30,7 @@ def get_vane_limits(droop=None):
     vanes = [
         x['vanes']
         for x in _data()
-        if droop == None
+        if droop is None
         or (droop and x['droop'])
         or (not droop and not x['droop'])
     ]

@@ -1,6 +1,6 @@
-import empirical.lobanoff.impeller.head_rise
-import empirical.lobanoff.impeller.head_constant
-import empirical.lobanoff.impeller.capacity_constant
+import empirical. lobanoff.graphs.head_rise
+import empirical. lobanoff.graphs.head_constant
+import empirical. lobanoff.graphs.capacity_constant
 from empirical.lobanoff import impeller
 from helpers import *
 

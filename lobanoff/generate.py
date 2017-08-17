@@ -3,11 +3,24 @@ from numpy.polynomial import polynomial
 from scipy.special import expit
 import scipy.constants
 from units import ureg
-from lobanoff.misc import calc_specific_speed
-from lobanoff.impeller import head_rise, head_constant, capacity_constant, diameter_ratio, npshr as npshr_fig, volute_constant, volute_misc, discharge_angle as discharge_angle_fig
+from lobanoff.graphs.capacity_constant import calc as calc_capacity_constant
+from lobanoff.graphs.diameter_ratio import calc as calc_diameter_ratio
+from lobanoff.graphs.discharge_angle import calc as calc_discharge_angle
+from lobanoff.graphs.head_constant import calc as calc_head_constant
+#from lobanoff.graphs.head_rise import calc as calc_head_rise
+from lobanoff.graphs.npshr import calc as calc_npshr
+from lobanoff.graphs.volute_constant import calc as calc_volute_constant
+from lobanoff.graphs.volute_misc import calc_volute_width, calc_cutwater_diameter
 
 # Gravity in the USA
 _g = (scipy.constants.g * ureg['m/s**2']).to('ft/s**2')
+
+
+@ureg.check('gpm', 'ft', 'rpm')
+def calc_specific_speed(Q, H, n):
+    """Calculate Ns, specific speed, or Nss, by supplying npshr for H"""
+    Ns = n * Q**0.5 / H**0.75
+    return Ns.to(ureg.pump_Ns_us)
 
 
 @ureg.check('gpm', 'ft', 'rpm', 'count', 'inch', '')
@@ -21,18 +34,18 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
     assert 400 <= Ns.to('pump_Ns_us').magnitude <= 3600
 
     # Head constant, reduced U2
-    Ku = head_constant.calc(Ns, vanes)
+    Ku = calc_head_constant(Ns, vanes)
     U2 = Ku * (2 * _g * H)**0.5
 
     # Capacity constant, reduced Cm2
-    Km2 = capacity_constant.calc(Ns, vanes)
+    Km2 = calc_capacity_constant(Ns, vanes)
     Cm2 = Km2 * (2 * _g * H)**0.5
 
     # Outer diameter
     D2 = 2 * (U2 / n).to('inch')  # important cast to go from circular to linear"
 
     # Eye diameter
-    dia_r = diameter_ratio.calc(Ns, tweak_eye_diameter)
+    dia_r = calc_diameter_ratio(Ns, tweak_eye_diameter)
     D1 = D2 * dia_r
 
     # Outer vane thickness (rough guess)
@@ -52,25 +65,25 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
     Ut = (n * D1 / 2).to('ft/s')
 
     # suction
-    npshr = npshr_fig.calc(Cm1, Ut)
+    npshr = calc_npshr(Cm1, Ut)
 
     # Discharge angle
-    discharge_angle = discharge_angle_fig.calc(vanes)
+    discharge_angle = calc_discharge_angle(vanes)
 
     # Suction specific speed
     Nss = calc_specific_speed(Q, npshr, n)
 
     # Volute area
-    K3 = volute_constant.calc(Ns)
+    K3 = calc_volute_constant(Ns)
     K3 = 0.365 * ureg['']
     C3 = K3 * (2 * _g * H)**0.5
     A8 = (Q / C3).to('inch**2')
 
     # Volute width
-    b3 = b2 * volute_misc.calc_volute_width(Ns, tweak_volute_width)
+    b3 = b2 * calc_volute_width(Ns, tweak_volute_width)
 
     # Volute cutwater diameter
-    D3 = D2 * volute_misc.calc_cutwater_diameter(Ns, tweak_cutwater_diameter)
+    D3 = D2 * calc_cutwater_diameter(Ns, tweak_cutwater_diameter)
 
     return {
         'D1': D1,

@@ -5,7 +5,7 @@ from scipy.special import expit
 from matplotlib import pyplot as plt
 from utils import memoized
 from units import ureg
-from lobanoff.data import _data as _lobanoff_data
+from lobanoff.graphs._data import _data as _lobanoff_data
 
 
 def _data():

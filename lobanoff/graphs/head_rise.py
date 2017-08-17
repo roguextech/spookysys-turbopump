@@ -5,8 +5,8 @@ from numpy.polynomial import polynomial
 from matplotlib import pyplot as plt
 from utils import memoized, polyfit2d
 from units import ureg
-from lobanoff.data import _data as _lobanoff_data
-from lobanoff.impeller.discharge_angle import get_limits as get_vane_limits
+from lobanoff.graphs._data import _data as _lobanoff_data
+from lobanoff.graphs.discharge_angle import get_limits as get_vane_limits
 
 
 def _data():

@@ -2,7 +2,7 @@ from __future__ import print_function
 from matplotlib import pyplot as plt
 from CoolProp.CoolProp import PropsSI
 import lobanoff
-import lobanoff.impeller.generate
+import lobanoff.graphs.generate
 from units import ureg
 
 

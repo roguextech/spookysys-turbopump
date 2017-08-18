@@ -25,8 +25,8 @@ def calc_specific_speed(Q, H, n):
     return Ns.to(ureg.pump_Ns_us)
 
 
-@ureg.check('gpm', 'ft', 'rpm', 'count', 'inch', '')
-def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, tweak_discharge_blade_width, tweak_volute_width, tweak_cutwater_diameter):
+@ureg.check('gpm', 'ft', 'rpm', 'count', 'inch')
+def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter=0, tweak_discharge_blade_width=0, tweak_volute_width=0, tweak_cutwater_diameter=0, tweak_Ps1=0):
     """Design impeller"""
 
     # Specific speed
@@ -44,7 +44,7 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
     Cm2 = Km2 * (2 * _g * H)**0.5
 
     # Outer diameter
-    D2 = 2 * (U2 / n).to('inch')  # important cast to go from circular to linear"
+    D2 = 2 * (U2 / n).to('inch')  # important cast to go from circular to linear
 
     # Eye diameter
     dia_r = calc_diameter_ratio(Ns, tweak_eye_diameter)
@@ -57,10 +57,13 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
     # Outer width
     b2 = (Q / (Cm2 * (D2 * np.pi - vanes * Su))).to('inch')
 
-    # Eye area
+    # Impeller discharge area
+    A2 = (D2 * np.pi - vanes * Su) * b2
+
+    # Impeller eye area at blade entry
     Ae = (D1**2 - protruding_shaft_diameter**2) * (np.pi / 4)
 
-    # Inlet flow speed
+    # Average meridianal velocity at blade inlet
     Cm1 = (Q / Ae).to('ft/s')
 
     # Inlet peripheral speed
@@ -75,7 +78,7 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
     # Suction specific speed
     Nss = calc_specific_speed(Q, npshr, n)
 
-    # Volute area
+    # Volute throat area
     K3 = calc_volute_constant(Ns)
     K3 = 0.365 * ureg['']
     C3 = K3 * (2 * _g * H)**0.5
@@ -89,6 +92,16 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
 
     # Head rise at shutoff
     head_rise_shutoff = calc_head_rise_shutoff(Ns, vanes)
+
+    # Inlet angle, Ps1
+    theta = np.arctan2(Cm1, Ut).to('deg')
+    R1_inv = 1.05 + (1.2 - 1.05) * expit(tweak_Ps1)
+    Ps1 = Cm1 * R1_inv
+    B1 = np.arctan2(Ps1, Ut).to('deg')  # tan(B1) = Ps1 / Ut
+    Wu1 = Cm1 / np.tan(B1)  # tan(B1) = Cm1 / Wu1
+    prerot_angle = np.arctan2((Ut - Wu1), Cm1).to('deg')  # tan(prerot) = (Ut-Wu1) / Cm1
+    if prerot_angle > 30:
+        print('Warning: Prerotation angle shouldn\'t be higher than 30 degrees.')
 
     return {
         'D1': D1,
@@ -107,6 +120,8 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
         'C3': C3,
         'Ut': Ut,
         'U2': U2,
+        'B1': B1,
+        'prerot_angle': prerot_angle,
         'discharge_angle': discharge_angle,
         'head_rise_shutoff': head_rise_shutoff
     }

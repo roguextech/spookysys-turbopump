@@ -1,4 +1,4 @@
-"""Figure 3-5: Impeller eye to outside diameter ratio [US]"""
+"""Figure 3-5: D2/D1 - Impeller eye to outside diameter ratio"""
 from __future__ import print_function
 import numpy as np
 from scipy.special import expit
@@ -9,7 +9,7 @@ from lobanoff.graphs._data import _data as _lobanoff_data
 
 
 def _data():
-    return _lobanoff_data()['impeller']['diameter_ratio']
+    return _lobanoff_data()['diameter_ratio']
 
 
 def _points(curve):

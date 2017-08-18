@@ -1,4 +1,4 @@
-"""Miscellaneous tables and figures"""
+"""Miscellaneous volute relations"""
 from scipy.special import expit
 import numpy as np
 from matplotlib import pyplot as plt
@@ -7,10 +7,12 @@ from units import ureg
 
 
 def _points_volute_width():
+    """Data given"""
     return [0, 1000, 1000, 3000, 3000, 4000], [2.0, 2.0, 1.75, 1.75, 1.6, 1.6]
 
 
 def _points_cutwater_diameter():
+    """Data given"""
     return [600, 1000, 1000, 1500, 1500, 2500, 2500, 4000], [1.05, 1.05, 1.06, 1.06, 1.07, 1.07, 1.09, 1.09]
 
 

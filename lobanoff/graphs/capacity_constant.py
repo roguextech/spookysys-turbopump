@@ -1,4 +1,4 @@
-"""Figure 3-4: Km2 - Reduced meridional discharge speed (Cm2), capacity constant"""
+"""Figure 3-4: Km2 = Cm2 / sqrt(2gH) - Capacity Constant, or reduced meridional discharge velocity"""
 from itertools import chain
 import numpy as np
 from numpy.polynomial import polynomial
@@ -9,7 +9,7 @@ from lobanoff.graphs._data import _data as _lobanoff_data
 
 
 def _data():
-    return _lobanoff_data()['impeller']['capacity_constant']
+    return _lobanoff_data()['capacity_constant']
 
 
 @memoized

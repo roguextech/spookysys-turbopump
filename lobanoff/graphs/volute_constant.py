@@ -1,4 +1,4 @@
-"""Figure 3-8: K3 - Reduced volute speed (C3), Volute velocity constant [US]"""
+"""Figure 3-8: K3 = C3 / sqrt(2gH) - Volute Velocity Constant, reduced volute velocity"""
 import numpy as np
 from matplotlib import pyplot as plt
 from utils import memoized
@@ -7,7 +7,7 @@ from lobanoff.graphs._data import _data as _lobanoff_data
 
 
 def _data():
-    return _lobanoff_data()['impeller']['volute_constant']
+    return _lobanoff_data()['volute_constant']
 
 
 def _points():

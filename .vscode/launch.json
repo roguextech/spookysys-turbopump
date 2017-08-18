@@ -1,12 +1,13 @@
 {
     "version": "0.2.0",
-    "configurations": [{
+    "configurations": [
+        {
             "name": "file",
             "type": "python",
             "request": "launch",
             "stopOnEntry": false,
             "pythonPath": "${config:python.pythonPath}",
-            "module": "${relativeFile}",
+            "module": "`echo ${relativeFile} | sed 's!/!.!g' | sed 's/.py$//'`",
             "cwd": "${workspaceRoot}",
             "console": "integratedTerminal",
             "env": {},

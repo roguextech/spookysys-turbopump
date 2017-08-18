@@ -1,4 +1,4 @@
-"""Figure 3-2: Percent Head Rise at Shutoff [US]"""
+"""Figure 3-2: Percent Head Rise at Shutoff, and whether there's droop"""
 from __future__ import print_function
 import numpy as np
 from numpy.polynomial import polynomial
@@ -6,11 +6,23 @@ from matplotlib import pyplot as plt
 from utils import memoized, polyfit2d
 from units import ureg
 from lobanoff.graphs._data import _data as _lobanoff_data
-from lobanoff.graphs.discharge_angle import get_limits as get_vane_limits
 
 
 def _data():
-    return _lobanoff_data()['impeller']['head_rise']
+    return _lobanoff_data()['head_rise']
+
+
+@memoized
+def get_vane_limits(droop=None):
+    """Return the minimum and maximum vane-count"""
+    vanes = [
+        x['vanes']
+        for x in _data()
+        if droop is None
+        or (droop and x['droop'])
+        or (not droop and not x['droop'])
+    ]
+    return min(vanes), max(vanes)
 
 
 @memoized
@@ -73,7 +85,7 @@ if __name__ == '__main__':
     plt.show()
 
 
-@ureg.wraps('', ('pump_Ns_us', 'count'))
+@ureg.wraps('pct', ('pump_Ns_us', 'count'))
 def calc(Ns, vanes):
     endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
     assert 0 <= Ns <= endpoint

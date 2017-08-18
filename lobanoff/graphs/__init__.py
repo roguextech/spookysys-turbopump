@@ -1,1 +1,1 @@
-"""Methods from Chapter 2: Impeller Design and other chapters"""
+"""Smooth relations derived by fitting to figures in book"""

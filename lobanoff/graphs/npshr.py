@@ -1,4 +1,4 @@
-"""Figure 3-6: NPSHR prediction chart [US]"""
+"""Figure 3-6: NPSHR for in water head from Cm1 and Ut"""
 from __future__ import print_function
 import numpy as np
 from numpy.polynomial import polynomial
@@ -9,7 +9,7 @@ from lobanoff.graphs._data import _data as _lobanoff_data
 
 
 def _data():
-    return _lobanoff_data()['impeller']['npshr']
+    return _lobanoff_data()['npshr']
 
 
 def _points():
@@ -43,11 +43,10 @@ def plot():
         plt.plot(fitted_Cm1, fitted_npshr, 'g-')
         annotate_x = 34
         annotate_y = polynomial.polyval2d(annotate_x, Ut, get_coeffs())
-        plt.annotate(str(Ut), xy=(annotate_x, annotate_y))
-
-    # Plot data
+        plt.annotate("Ut=" + str(Ut), xy=(annotate_x, annotate_y))
     plt.plot(Cm1s, npshrs, 'r.')
 
+    # Plot data
     plt.gca().set_title(__doc__)
     plt.gca().set_xticks(np.arange(0, 50 + 5, 5))
     plt.gca().set_yticks(np.arange(0, 80 + 5, 5))

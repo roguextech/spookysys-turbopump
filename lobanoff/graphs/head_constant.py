@@ -1,4 +1,4 @@
-"""Figure 3-3: Ku - Reduced peripheral speed (U2), head constant, speed Constant"""
+"""Figure 3-3: Ku = U2 / sqrt(2gH) - Head Constant, Speed Constant, reduced peripheral speed"""
 from __future__ import print_function
 from itertools import chain
 import numpy as np
@@ -9,7 +9,7 @@ from lobanoff.graphs._data import _data as _lobanoff_data
 
 
 def _data():
-    return _lobanoff_data()['impeller']['head_constant']
+    return _lobanoff_data()['head_constant']
 
 
 @memoized

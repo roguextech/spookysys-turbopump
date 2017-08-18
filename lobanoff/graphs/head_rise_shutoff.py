@@ -1,8 +1,8 @@
 """Figure 3-2: Percent Head Rise at Shutoff, and whether there's droop"""
 from __future__ import print_function
 import numpy as np
-from numpy.polynomial import polynomial
 from matplotlib import pyplot as plt
+from numpy.polynomial import polynomial
 from utils import memoized, polyfit2d
 from units import ureg
 from lobanoff.graphs._data import _data as _lobanoff_data

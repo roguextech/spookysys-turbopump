@@ -52,10 +52,10 @@ def plot():
     plt.gca().set_yticks(np.arange(0, 80 + 5, 5))
     plt.gca().set_xlim(0, 50)
     plt.gca().set_ylim(0, 80)
-    plt.xlabel('Cm1 - Suction Eye Velocity [ft/s]')
-    plt.ylabel('Required NPSH water [ft]')
     plt.minorticks_on()
     plt.grid()
+    plt.xlabel('Cm1 - Suction Eye Velocity [ft/s]')
+    plt.ylabel('Required NPSH water [ft]')
     plt.draw()
 
 

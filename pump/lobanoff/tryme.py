@@ -12,6 +12,7 @@ from pump.lobanoff.head_rise_shutoff import calc as calc_head_rise_shutoff
 from pump.lobanoff.npshr import calc as calc_npshr
 from pump.lobanoff.volute_constant import calc as calc_volute_constant
 from pump.lobanoff.volute_misc import calc_volute_width, calc_cutwater_diameter
+from pump.lobanoff.vane_and_shroud_thickness import calc_vane_thickness
 from pump.lobanoff.misc import calc_specific_speed, G
 
 
@@ -41,8 +42,7 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
     D1 = D2 * dia_r
 
     # Outer vane thickness (rough guess)
-    tmp = expit(-1.35 + tweak_discharge_blade_width.magnitude)
-    Su = (np.pi * D2 / vanes.magnitude) * tmp
+    Su = calc_vane_thickness(D2, 0)
 
     # Outer width
     b2 = (Q / (Cm2 * (D2 * np.pi - vanes * Su))).to('inch')

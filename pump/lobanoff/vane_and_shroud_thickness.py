@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from numpy.polynomial import polynomial
 from utils import memoized, polyfit2d
 from units import ureg
-from lobanoff.graphs._data import _data as _lobanoff_data
+from pump.lobanoff._data import _data as _lobanoff_data
 
 
 def _data():
@@ -25,13 +25,10 @@ def get_limits():
 def _points(part):
     diameters, values = [], []
     for iter in _data():
-        dias = [np.average(iter['D2'])]
+        p = iter['D2']
+        dias = [p[0], np.average(p), p[-1]]
         diameters.extend(dias)
         values.extend([iter[part]] * len(dias))
-    diameters.insert(0, min(_data()[0]['D2']))
-    diameters.append(max(_data()[-1]['D2']))
-    values.insert(0, _data()[0][part])
-    values.append(_data()[-1][part])
     return diameters, values
 
 
@@ -40,7 +37,7 @@ def get_coeffs(part, point):
     """Polynomial coefficients relating D2 to vane/shroud thickness at different points"""
     diameters, values = _points(part)
     values = [x[point] for x in values]
-    return np.polyfit(diameters, values, 3)
+    return np.polyfit(diameters, values, 2)
 
 
 def plot(part):
@@ -72,3 +69,19 @@ if __name__ == '__main__':
     plot('vane')
     plot('shroud')
     plt.show()
+
+
+@ureg.wraps('inch', ('inch'))
+def calc_vane_thickness(D2, point):
+    """Minimum vane thickness, 0: outlet, 1:middle, 2:inlet"""
+    startpoint, endpoint = get_limits()
+    assert startpoint < D2 < endpoint
+    return np.polyval(get_coeffs('vane', point), D2)
+
+
+@ureg.wraps('inch', ('inch'))
+def calc_shroud_thickness(D2, point):
+    """Minimum back shroud thickness, 0:t1 at outlet, 1:t2 at 3/4*D2"""
+    startpoint, endpoint = get_limits()
+    assert startpoint < D2 < endpoint
+    return np.polyval(get_coeffs('shroud', point), D2)

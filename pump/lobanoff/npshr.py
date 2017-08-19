@@ -5,7 +5,7 @@ from numpy.polynomial import polynomial
 from matplotlib import pyplot as plt
 from utils import memoized, polyfit2d
 from units import ureg
-from lobanoff.graphs._data import _data as _lobanoff_data
+from pump.lobanoff._data import _data as _lobanoff_data
 
 
 def _data():

@@ -1,7 +1,7 @@
 import empirical. lobanoff.graphs.head_rise
 import empirical. lobanoff.graphs.head_constant
 import empirical. lobanoff.graphs.capacity_constant
-from empirical.lobanoff import impeller
+from empirical.pump import impeller
 from helpers import *
 
 # Note: Potassium permanganate activated alumina balls are cheap

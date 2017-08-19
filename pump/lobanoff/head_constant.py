@@ -5,7 +5,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 from utils import memoized
 from units import ureg
-from lobanoff.graphs._data import _data as _lobanoff_data
+from pump.lobanoff._data import _data as _lobanoff_data
 
 
 def _data():

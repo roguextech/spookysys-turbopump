@@ -5,7 +5,24 @@ import numpy as np
 from matplotlib import pyplot as plt
 from utils import memoized
 from units import ureg
-from lobanoff.graphs.head_rise_shutoff import _data, get_vane_limits
+from pump.lobanoff._data import _data as _lobanoff_data
+
+
+def _data():
+    return _lobanoff_data()['head_rise']
+
+
+@memoized
+def get_limits(droop=None):
+    """Return the minimum and maximum vane-count"""
+    vanes = [
+        x['vanes']
+        for x in _data()
+        if droop is None
+        or (droop and x['droop'])
+        or (not droop and not x['droop'])
+    ]
+    return min(vanes), max(vanes)
 
 
 @memoized
@@ -20,7 +37,7 @@ def get_coeffs():
 def plot():
     """Plot raw data and polynomial approximation"""
     plt.figure()
-    startpoint, endpoint = get_vane_limits()
+    startpoint, endpoint = get_limits()
 
     # Plot data
     x = [x_['vanes'] for x_ in _data()]
@@ -28,7 +45,7 @@ def plot():
     plt.plot(x, y, 'r-')
 
     # Plot fitted curves
-    x = np.linspace(*get_vane_limits())
+    x = np.linspace(*get_limits())
     y = np.polyval(get_coeffs(), x)
     plt.plot(x, y, 'g--')
 

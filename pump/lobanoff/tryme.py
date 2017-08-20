@@ -17,7 +17,7 @@ from pump.lobanoff.misc import calc_specific_speed, G
 
 
 @ureg.check('gpm', 'ft', 'rpm', 'count', 'inch')
-def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, tweak_discharge_blade_width, tweak_volute_width, tweak_cutwater_diameter, tweak_Ps1):
+def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width, tweak_volute_width, tweak_cutwater_diameter, tweak_Ps1):
     """Design impeller"""
 
     # Specific speed
@@ -41,17 +41,23 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
     dia_r = calc_diameter_ratio(Ns, tweak_eye_diameter)
     D1 = D2 * dia_r
 
-    # Outer vane thickness (rough guess)
-    Su = calc_vane_thickness(D2, 0)
+    # Outer vane thickness
+    Su2 = calc_vane_thickness(D2, 0)
 
     # Outer width
-    b2 = (Q / (Cm2 * (D2 * np.pi - vanes * Su))).to('inch')
+    b2 = (Q / (Cm2 * (D2 * np.pi - vanes * Su2))).to('inch')
 
     # Impeller discharge area
-    A2 = (D2 * np.pi - vanes * Su) * b2
+    A2 = (D2 * np.pi - vanes * Su2) * b2
 
     # Impeller eye area at blade entry
-    Ae = (D1**2 - protruding_shaft_diameter**2) * (np.pi / 4)
+    Ae = (D1**2 - Ds**2) * (np.pi / 4)
+
+    # Outer vane thickness
+    Su1 = calc_vane_thickness(D2, 2)
+
+    # Effective eye area
+    Ae_effective = Ae - vanes * Su1 * (D1 - Ds) / 2
 
     # Average meridianal velocity at blade inlet
     Cm1 = (Q / Ae).to('ft/s')
@@ -99,9 +105,11 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
         'D3': D3,
         'b2': b2,
         'b3': b3,
-        'Su': Su,
+        'Su1': Su1,
+        'Su2': Su2,
         'A8': A8,
         'Ae': Ae,
+        'Ae_effective': Ae_effective,
         'npshr': npshr,
         'Ns': Ns,
         'Nss': Nss,
@@ -113,7 +121,8 @@ def generate(Q, H, n, vanes, protruding_shaft_diameter, tweak_eye_diameter, twea
         'B1': B1,
         'prerot_angle': prerot_angle,
         'discharge_angle': discharge_angle,
-        'head_rise_shutoff': head_rise_shutoff
+        'head_rise_shutoff': head_rise_shutoff,
+        'Ae_effective/Ae': Ae_effective / Ae
     }
 
 

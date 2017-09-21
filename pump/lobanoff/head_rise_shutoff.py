@@ -86,7 +86,7 @@ if __name__ == '__main__':
     plt.show()
 
 
-@ureg.wraps('pct', ('pump_Ns_us', 'count'))
+@ureg.wraps('pct', ('Ns_loba', 'count'))
 def calc(Ns, vanes):
     endpoint = np.polyval(get_Ns_limit_coeffs(), vanes)
     assert 0 <= Ns <= endpoint

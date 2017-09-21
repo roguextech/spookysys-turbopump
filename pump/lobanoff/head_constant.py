@@ -67,7 +67,7 @@ if __name__ == '__main__':
     plt.show()
 
 
-@ureg.wraps('', ('pump_Ns_us', 'count'))
+@ureg.wraps('', ('Ns_loba', 'count'))
 def calc(Ns, vanes):
     """Calculate Ku, reduced U2"""
     startpoint, endpoint = get_vane_limits()

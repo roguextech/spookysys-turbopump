@@ -55,7 +55,7 @@ if __name__ == '__main__':
     plt.show()
 
 
-@ureg.wraps('', ('pump_Ns_us'))
+@ureg.wraps('', ('Ns_loba'))
 def calc(Ns):
     startpoint, endpoint = get_Ns_limits()
     assert startpoint <= Ns <= endpoint

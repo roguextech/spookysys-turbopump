@@ -1,6 +1,7 @@
 """Generate impeller as per Lobanoff's chapter"""
 from __future__ import print_function
 import numpy as np
+from numpy import pi as PI
 from numpy.polynomial import polynomial
 from scipy.special import expit
 from units import ureg
@@ -24,7 +25,7 @@ def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width
     Ns = calc_specific_speed(Q, H, n)
 
     # from page 36
-    assert 400 <= Ns.to('pump_Ns_us').magnitude <= 3600
+    assert 400 <= Ns.to('Ns_loba').magnitude <= 3600
 
     # Head constant, reduced U2
     Ku = calc_head_constant(Ns, vanes)
@@ -35,7 +36,7 @@ def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width
     Cm2 = Km2 * (2 * G * H)**0.5
 
     # Outer diameter
-    D2 = 2 * (U2 / n).to('inch')  # important cast to go from circular to linear
+    D2 = 2 * U2.to('inches/s') / n.to('1/s')
 
     # Eye diameter
     dia_r = calc_diameter_ratio(Ns, tweak_eye_diameter)
@@ -45,19 +46,16 @@ def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width
     Su2 = calc_vane_thickness(D2, 0)
 
     # Outer width
-    b2 = (Q / (Cm2 * (D2 * np.pi - vanes * Su2))).to('inch')
+    b2 = (Q / (Cm2 * (D2 * PI - vanes * Su2))).to('inch')
 
     # Impeller discharge area
-    A2 = (D2 * np.pi - vanes * Su2) * b2
+    A2 = (D2 * PI - vanes * Su2) * b2
 
     # Impeller eye area at blade entry
-    Ae = (D1**2 - Ds**2) * (np.pi / 4)
+    Ae = (D1**2 - Ds**2) * (PI / 4)
 
     # Outer vane thickness
     Su1 = calc_vane_thickness(D2, 2)
-
-    # Effective eye area
-    Ae_effective = Ae - vanes * Su1 * (D1 - Ds) / 2
 
     # Average meridianal velocity at blade inlet
     Cm1 = (Q / Ae).to('ft/s')
@@ -65,11 +63,11 @@ def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width
     # Inlet peripheral speed
     Ut = (n * D1 / 2).to('ft/s')
 
-    # suction
-    npshr = calc_npshr(Cm1, Ut)
-
     # Discharge angle
     discharge_angle = calc_discharge_angle(vanes)
+
+    # suction
+    npshr = calc_npshr(Cm1, Ut)
 
     # Suction specific speed
     Nss = calc_specific_speed(Q, npshr, n)
@@ -109,7 +107,6 @@ def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width
         'Su2': Su2,
         'A8': A8,
         'Ae': Ae,
-        'Ae_effective': Ae_effective,
         'npshr': npshr,
         'Ns': Ns,
         'Nss': Nss,
@@ -122,7 +119,6 @@ def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width
         'prerot_angle': prerot_angle,
         'discharge_angle': discharge_angle,
         'head_rise_shutoff': head_rise_shutoff,
-        'Ae_effective/Ae': Ae_effective / Ae
     }
 
 

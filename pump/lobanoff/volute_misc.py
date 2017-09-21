@@ -88,5 +88,5 @@ if __name__ == '__main__':
     plt.show()
 
 
-calc_volute_width = ureg.wraps('', ('pump_Ns_us', ''))(_volute_width)
-calc_cutwater_diameter = ureg.wraps('', ('pump_Ns_us', ''))(_cutwater_diameter)
+calc_volute_width = ureg.wraps('', ('Ns_loba', ''))(_volute_width)
+calc_cutwater_diameter = ureg.wraps('', ('Ns_loba', ''))(_cutwater_diameter)

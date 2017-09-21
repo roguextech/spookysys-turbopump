@@ -86,7 +86,7 @@ if __name__ == '__main__':
     plt.show()
 
 
-@ureg.wraps('', ('pump_Ns_us', 'count'))
+@ureg.wraps('', ('Ns_loba', 'count'))
 def calc(Ns, vanes):
     """Calculate Km2, reduced Cm2"""
     startpoint, endpoint_coeffs = get_Ns_limits_coeffs()

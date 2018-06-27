@@ -1,0 +1,19 @@
+MST 400-400
+max power: 160 W
+sustained power: 120 W
+weight: 2.9 kg
+
+Nova 150
+max power: 120 W
+weight: 11.5 kg
+speed: 6000 rpm
+torque: 250 Nm
+Voltage: 350 V
+effect: 95%
+
+Batteries 90C lipos
+weight: ~10 kg
+
+
+Total: < 25 kg
+

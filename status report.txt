@@ -1,0 +1,60 @@
+
+
+Status report
+
+
+
+
+Unfortunately a lot of not so good news. 
+
+Kevin Ford, the former NASA Astronaut who was supporting me with my PhD application, moved back to he U.S.
+
+The professor who offered to help with the project, Ole Gunnar Dalberg, is also not answering e-mails. I guess he's busy. The solution is simple, I'll be back in Trondheim from November and will start showing up at his office.
+
+Also, I am in need of cash and am forced to start working full time from 1st November. 
+
+The first reason for this is that the company where I was working part time ran out of money and stopped paying me salaries. It took me two months until I got wise and terminated the project. Secondly, I had to pay a tax advisor close to 100.000 NOK to clean up a mess resulting from me neglecting my norwegian tax report while living, working, and founding a company in Germany.
+
+Because of the above (and more, such as moving out of my apartment in Berlin), I have not made that much progress on the project, and I don't currently have a clear path to funding for my PhD application.
+
+As I start working full time from next week, my first priority will be the PhD application. I'll keep working on the turbopump project on the side.
+
+
+
+PROJECT STATUS
+
+I've implemented methods for dimensioning of impellers from [1] in Python. This will allow me to drive a geometry generator and CFD-based optimizer.
+
+As I've started realizing the scope of coding everything myself, I've started looking into software packagess. Have requested evaluation license of CFTurbo, which was used in [2].
+
+I've researched options for the pump drive system:
+
+Electric
+- Considered simplest solution
+- Very promising from a technology perspective (~25kg, within range)
+- Can be built entirely from off-the-shelf parts (Plettenberg Nova 150 + MST 400-400 + 90C LiPo batteries)
+- Challenge w flammable LiPo batteries, esp. in vacuum (I think solvable)
+- However, motor is extremely expensive!
+- Could we work some sponsorship magic??
+
+High Test Peroxide gas generator
+- Considered second simplest solution
+- After much research questions remain around catalyst type (e.g. poisoning, reproducibility)
+- Issues around supply
+
+N2O gas generator
+- Less used than HTP, though similar in some respects
+- Catalysts are harder to build, must be pre-heated
+- Danger of spontaneous decomposition must be considered 
+- Decomposes extremely hot (Spray water into jet? Could not find prior art)
+- Temperature sensitive, reproducibility concerns
+
+Bipropellant gas generator
+- e.g. propane/n2o, or h2/gox
+- most complex solution
+
+Tapoff cycle
+- Consider it undesired, as interfers too much with engine design
+
+
+I've researched 

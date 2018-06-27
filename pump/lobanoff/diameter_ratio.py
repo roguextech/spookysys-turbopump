@@ -63,7 +63,7 @@ if __name__ == '__main__':
     plt.show()
 
 
-@ureg.wraps('', ('Ns_loba', ''))
+@ureg.wraps('', ('Ns_loba', None))
 def calc(Ns, tweak_eye_diameter):
     """Calculate D2/D1"""
     startpoint, endpoint = get_limits()

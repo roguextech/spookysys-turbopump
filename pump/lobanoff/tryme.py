@@ -18,8 +18,13 @@ from pump.lobanoff.misc import calc_specific_speed, G
 
 
 @ureg.check('gpm', 'ft', 'rpm', 'count', 'inch')
-def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width, tweak_volute_width, tweak_cutwater_diameter, tweak_Ps1):
+def generate(Q, H, n, vanes, Ds):
     """Design impeller"""
+
+    tweak_eye_diameter = 0
+    tweak_volute_width = 0
+    tweak_cutwater_diameter = 0
+    tweak_Ps1 = 0
 
     # Specific speed
     Ns = calc_specific_speed(Q, H, n)
@@ -122,17 +127,34 @@ def generate(Q, H, n, vanes, Ds, tweak_eye_diameter, tweak_discharge_blade_width
     }
 
 
-if __name__ == '__main__':
+def try_boox_ex():
     pumpe = generate(
-        2100 * ureg.gpm,
-        450 * ureg.ft,
-        3600 * ureg.rpm,
-        6 * ureg.count,
-        2 * ureg.inch,
-        0 * ureg[''],
-        0 * ureg[''],
-        0 * ureg[''],
-        0 * ureg[''],
-        0 * ureg['']
+        Q=2100 * ureg.gpm,
+        H=450 * ureg.ft,
+        n=3600 * ureg.rpm,
+        vanes=6 * ureg.count,
+        Ds=2 * ureg['in']
     )
     print('\n'.join((str(x) + ': ' + str(pumpe[x]) for x in pumpe)))
+
+
+def try_spica(rpm):
+    pumpe = generate(
+        25 * ureg['l/s'],
+        275 * ureg.m,
+        rpm * ureg.rpm,
+        6 * ureg.count,
+        0 * ureg.inch
+    )
+    print('\n'.join((str(x) + ': ' + str(pumpe[x].to_base_units()) for x in pumpe)))
+    print('Ns: {}'.format(pumpe['Ns']))
+
+
+if __name__ == '__main__':
+    # try_book_ex()
+    print("RPM 7000")
+    try_spica(7000)
+    print()
+    print("RPM 9000")
+    try_spica(9000)
+    print()
